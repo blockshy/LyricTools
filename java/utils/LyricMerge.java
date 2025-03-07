@@ -5,6 +5,7 @@ import entity.LyricEntity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class LyricMerge {
 
@@ -62,7 +63,7 @@ public class LyricMerge {
                         }
                         mergedText.append(entry.entity.getText());
                         mergedStart = Math.min(mergedStart, entry.entity.getStartTimeMs());
-                        mergedEnd = Math.max(mergedEnd, entry.entity.getEndTimeMs());
+                        mergedEnd = Math.max(mergedEnd, Objects.isNull(entry.entity.getEndTimeMs()) ? entry.entity.getStartTimeMs() : entry.entity.getEndTimeMs());
                         break;
                     }
                 }

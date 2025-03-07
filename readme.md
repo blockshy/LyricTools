@@ -2,6 +2,8 @@
 
 运行环境：JDK 21
 
+目前仅支持合并lrc或srt格式的歌词
+
 OUTPUT_PATH为输出文件路径
 
 LYRIC_ORDER_LIST为歌词排序列表

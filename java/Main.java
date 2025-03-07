@@ -1,7 +1,6 @@
 import utils.LyricConverter;
 import entity.LyricEntity;
-import utils.LrcParser;
-import utils.SrtParser;
+import utils.LyricParser;
 import utils.LyricMerge;
 
 import java.io.IOException;
@@ -23,10 +22,8 @@ public class Main {
     // 设置歌词合并顺序
     // 合并顺序为数组中的先后顺序，可自行修改，传入路径需要为有效路径，如果为无效路径会取消该条目的合并
     public static final String[] LYRIC_ORDER_LIST = {
-            "./resources/lyric/srt/高橋李依 (たかはし りえ) - Door (门) (Single Version)_qm.srt",
-            "./resources/lyric/srt/高橋李依 (たかはし りえ) - Door (门) (Single Version)_qmRoma.srt",
-            "./resources/lyric/srt/高橋李依 (たかはし りえ) - Door (门) (Single Version)_qmts.srt",
-            "./resources/lyric/srt/高橋李依 (たかはし りえ) - Door (门) (Single.srt"
+            "D:\\剪辑\\素材\\歌曲字幕\\最后的修行.lrc",
+            "D:\\剪辑\\素材\\歌曲字幕\\最后的修行-JP.lrc"
     };
 
     //设置偏差值 由于存在字幕文件不同步的情况，所以设置一个偏差值，当时间轴相差在这个值内时，认为是同一句歌词
@@ -78,8 +75,8 @@ public class Main {
 
         // 根据文件扩展名解析文件
         return switch (getFileExtension(filePath)) {
-            case "srt" -> SrtParser.parse(path);
-            case "lrc" -> LrcParser.parse(path);
+            case "srt" -> LyricParser.srtParse(path);
+            case "lrc" -> LyricParser.lrcParse(path);
             default -> {
                 logger.log(System.Logger.Level.INFO, "不支持的文件格式: " + filePath);
                 yield null;
