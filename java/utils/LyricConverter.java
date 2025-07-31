@@ -7,6 +7,11 @@ import java.util.List;
 
 public class LyricConverter {
 
+    /**
+     * 将歌词列表转换为 SRT 格式字符串
+     * @param lyrics 歌词列表
+     * @return SRT 格式字符串
+     */
     public static String convertToSrt(List<LyricEntity> lyrics) {
         // 按开始时间排序
         List<LyricEntity> sortedLyrics = new ArrayList<>(lyrics);
@@ -28,6 +33,11 @@ public class LyricConverter {
         return srt.toString().trim();
     }
 
+    /**
+     * 将歌词列表转换为 LRC 格式字符串
+     * @param lyrics 歌词列表
+     * @return LRC 格式字符串
+     */
     public static String convertToLrc(List<LyricEntity> lyrics) {
         // 按开始时间排序
         List<LyricEntity> sortedLyrics = new ArrayList<>(lyrics);

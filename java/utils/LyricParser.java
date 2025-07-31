@@ -1,5 +1,6 @@
 package utils;
 
+import constant.SupportFileTypeEnum;
 import entity.LyricEntity;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -219,7 +220,7 @@ public class LyricParser {
      * @return 歌词列表
      * @throws IOException 文件读取异常
      */
-    private static List<LyricEntity> parseLyricFile(String filePath, String type) throws IOException, ParserConfigurationException, SAXException {
+    private static List<LyricEntity> parseLyricFile(String filePath, SupportFileTypeEnum type) throws IOException, ParserConfigurationException, SAXException {
         Path path;
         path = Paths.get(filePath);
         if (!Files.exists(path)) {
@@ -227,11 +228,11 @@ public class LyricParser {
         }
 
         return switch (type) {
-            case "srt" -> lrcParseByFile(path);
-            case "lrc" -> srtParseByFile(path);
-            case "qrc" -> qrcXmlParseByContent(QrcLyricDecrypter.decryptByQrcFile(filePath));
-            case "qrcRoma" -> qrcXmlParseByContent(QrcLyricDecrypter.decryptByQrcFile(filePath));
-            case "qrcTs" -> qrcTsXmlParseByContent(QrcLyricDecrypter.decryptByQrcFile(filePath));
+            case SupportFileTypeEnum.SRT -> lrcParseByFile(path);
+            case SupportFileTypeEnum.LRC -> srtParseByFile(path);
+            case SupportFileTypeEnum.QRC -> qrcXmlParseByContent(QrcLyricDecrypter.decryptByQrcFile(filePath));
+            case SupportFileTypeEnum.QRC_ROMA -> qrcXmlParseByContent(QrcLyricDecrypter.decryptByQrcFile(filePath));
+            case SupportFileTypeEnum.QRC_TS -> qrcTsXmlParseByContent(QrcLyricDecrypter.decryptByQrcFile(filePath));
             default -> null;
         };
     }
@@ -239,18 +240,18 @@ public class LyricParser {
     /**
      * 解析歌词文件
      * @param content 歌词内容
-     * @param type 歌词类型（lrc, srt, qrc, qrcRoma, qrcTs）
+     * @param type 歌词类型（SupportFileTypeEnum）
      * @return 歌词列表
      * @throws IOException 文件读取异常
      */
-    public static List<LyricEntity> parseLyricContent(String content, String type) throws IOException, ParserConfigurationException, SAXException {
+    public static List<LyricEntity> parseLyricContent(String content, SupportFileTypeEnum type) throws IOException, ParserConfigurationException, SAXException {
 
         return switch (type) {
-            case "srt" -> lrcParseByContent(content);
-            case "lrc" -> srtParseByContent(content);
-            case "qrc" -> qrcXmlParseByContent(content);
-            case "qrcRoma" -> qrcXmlParseByContent(content);
-            case "qrcTs" -> qrcTsXmlParseByContent(content);
+            case SupportFileTypeEnum.SRT -> lrcParseByContent(content);
+            case SupportFileTypeEnum.LRC -> srtParseByContent(content);
+            case SupportFileTypeEnum.QRC -> qrcXmlParseByContent(content);
+            case SupportFileTypeEnum.QRC_ROMA -> qrcXmlParseByContent(content);
+            case SupportFileTypeEnum.QRC_TS -> qrcTsXmlParseByContent(content);
             default -> null;
         };
     }
@@ -260,11 +261,11 @@ public class LyricParser {
      * @param fileListMap 文件路径列表
      * @return 歌词列表
      */
-    public static List<List<LyricEntity>> parseLyricFileList(Map<String, String> fileListMap) {
+    public static List<List<LyricEntity>> parseLyricFileList(Map<String, SupportFileTypeEnum> fileListMap) {
         List<List<LyricEntity>> lyrics = new ArrayList<>();
-        for (Map.Entry<String, String> stringStringEntry : fileListMap.entrySet()) {
-            String filePath = stringStringEntry.getKey();
-            String type = stringStringEntry.getValue();
+        for (Map.Entry<String, SupportFileTypeEnum> fileListMapEntry : fileListMap.entrySet()) {
+            String filePath = fileListMapEntry.getKey();
+            SupportFileTypeEnum type = fileListMapEntry.getValue();
             if (filePath == null || filePath.isEmpty()) {
                 continue; // 跳过空路径
             }

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 /**
@@ -598,8 +599,43 @@ public class QrcLyricDecrypter {
         }
     }
 
+    /**
+     * 加密QRC数据
+     * @param text 待加密的文本内容
+     * @return 加密后的十六进制字符串
+     */
+    public static String encryptQrc(String text) {
+        // 将文本内容转换为字节数组
+        byte[] inputData = text.getBytes(StandardCharsets.UTF_8);
 
+        // 使用zlib压缩数据
+        byte[] compressedData;
+        try {
+            Deflater deflater = new Deflater();
+            deflater.setInput(inputData);
+            deflater.finish();
+            compressedData = new byte[inputData.length * 2]; // 初始缓冲区
+            int compressedLength = deflater.deflate(compressedData);
+            deflater.end();
+            compressedData = Arrays.copyOf(compressedData, compressedLength);
+        } catch (Exception e) {
+            throw new RuntimeException("压缩失败: " + e.getMessage());
+        }
 
+        // 三重DES加密 (E->D->E)
+        byte[] step1 = desEncrypt(compressedData, KEY3);
+        byte[] step2 = desDecrypt(step1, KEY2);
+        byte[] step3 = desEncrypt(step2, KEY1);
+
+        // 将加密后的字节数组转换为十六进制字符串
+        return CommonUtils.bytesToHex(step3);
+    }
+
+    /**
+     * 使用QRC文件路径解密
+     * @param filePath QRC文件路径
+     * @return 解密后的文本内容
+     */
     public static String decryptByQrcFile(String filePath){
         byte[] fileBytes;
         try {
@@ -613,6 +649,11 @@ public class QrcLyricDecrypter {
         return decryptByQrcHexContent(hexContent);
     }
 
+    /**
+     * 使用QRC文件内容解密
+     * @param hexContent QRC文件内容的十六进制字符串
+     * @return 解密后的文本内容
+     */
     public static String decryptByQrcHexContent(String hexContent){
 
         // 跳过前11字节(22个十六进制字符)

@@ -3,16 +3,28 @@ package utils;
 import entity.LyricEntity;
 import java.util.*;
 
-public class LyricMerge {
+public class LyricMerger {
 
+    /**
+     * 合并多个歌词列表
+     * @param timeDifference 时间差范围（毫秒）
+     * @param lyrics 各个歌词列表
+     * @return 合并后的歌词列表
+     */
     public static List<LyricEntity> mergeLyricByEntity(long timeDifference, List<List<LyricEntity>> lyrics) {
-        // 排除非法路径
+        // 排除解析失败的列表
         lyrics.removeIf(list -> list == null || list.isEmpty());
 
+        if (lyrics.isEmpty()) {
+            return Collections.emptyList(); // 如果没有有效的歌词列表，返回空列表
+        }
+
+        // 初始化指针数组，每个子列表一个指针
         List<LyricEntity> mergedLyric = new ArrayList<>();
         int[] pointers = new int[lyrics.size()];
         Arrays.fill(pointers, 0);
 
+        // 使用指针遍历所有子列表，找到时间最小的条目
         while (true) {
             Long minTime = null;
             // 查找当前所有指针中的最小时间

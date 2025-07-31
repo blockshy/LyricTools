@@ -5,6 +5,11 @@ import java.util.concurrent.TimeUnit;
 
 public class CommonUtils {
 
+    /**
+     * 格式化时间为 SRT 格式
+     * @param milliseconds 毫秒数
+     * @return 格式化后的时间字符串
+     */
     public static String formatSrtTime(Long milliseconds) {
         long hours = TimeUnit.MILLISECONDS.toHours(milliseconds);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds) % 60;
@@ -14,6 +19,11 @@ public class CommonUtils {
         return String.format("%02d:%02d:%02d,%03d", hours, minutes, seconds, millis);
     }
 
+    /**
+     * 格式化时间为 LRC 格式
+     * @param milliseconds 毫秒数
+     * @return 格式化后的时间字符串
+     */
     public static String formatLrcTime(Long milliseconds) {
         long totalSeconds = milliseconds / 1000;
         long minutes = totalSeconds / 60;
@@ -52,6 +62,12 @@ public class CommonUtils {
         return timeDifference <= timeRangeMillis;
     }
 
+    /**
+     * 解析毫秒字符串
+     * @param millisStr 毫秒字符串
+     * @param separator 分隔符
+     * @return 解析后的毫秒数
+     */
     public static int parseMillis(String millisStr, String separator) {
         int length = millisStr.length();
         if (length == 2 && separator.equals(".")) {
@@ -60,6 +76,11 @@ public class CommonUtils {
         return Integer.parseInt(millisStr);
     }
 
+    /**
+     * 解析时间字符串为毫秒
+     * @param timeStr 时间字符串，格式为 "HH:MM:SS,mmm" 或 "HH:MM:SS.mmm"
+     * @return 解析后的毫秒数
+     */
     public static long parseTime(String timeStr) {
         String normalized = timeStr.replace('.', ',');
         String[] parts = normalized.split("[,:]");

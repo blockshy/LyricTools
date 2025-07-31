@@ -1,9 +1,9 @@
 package demo;
 
+import constant.SupportFileTypeEnum;
 import entity.LyricEntity;
 import org.xml.sax.SAXException;
 import utils.LyricConverter;
-import utils.LyricMerge;
 import utils.OpenLyricUtils;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -12,21 +12,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 歌词合并主程序
- */
+
 public class LyricMergeUseDemo {
 
     // 合并歌词输出路径
     public static final String OUTPUT_PATH = "./resources/result/";
 
-    //key 为 QRC 文件路径，value 为对应的类型(lrc/srt/qrc/qrcRoma/qrcTs)
+    //key 为 QRC 文件路径，value 为对应的类型(SupportFileTypeEnum)
     // 合并顺序为数组中的先后顺序，可自行修改，传入路径需要为有效路径，如果为无效路径会取消该条目的合并
-    // 需要注意qrc应为QQ音乐的歌词文件，不应对其进行预先修改
-    public static final Map<String, String> LYRIC_QRC_ORDER_LIST = new HashMap<>(){{
-            put("D:\\workspace\\Java\\LyricTools\\resources\\lyric\\qrc\\ClariS (クラリス) - irony (讽刺) - 259 - irony (反话)_qm.qrc", "qrc");
-            put("D:\\workspace\\Java\\LyricTools\\resources\\lyric\\qrc\\ClariS (クラリス) - irony (讽刺) - 259 - irony (反话)_qmRoma.qrc", "qrcRoma");
-            put("D:\\workspace\\Java\\LyricTools\\resources\\lyric\\qrc\\ClariS (クラリス) - irony (讽刺) - 259 - irony (反话)_qmts.qrc", "qrcTs");
+    // 需要注意qrc相关类型应为QQ音乐的歌词文件，不预先有修改（否则可能导致解密失败）
+    public static final Map<String, SupportFileTypeEnum> LYRIC_QRC_ORDER_LIST = new HashMap<>(){{
+            put("D:\\workspace\\Java\\LyricTools\\resources\\lyric\\qrc\\ClariS (クラリス) - irony (讽刺) - 259 - irony (反话)_qm.qrc", SupportFileTypeEnum.QRC);
+            put("D:\\workspace\\Java\\LyricTools\\resources\\lyric\\qrc\\ClariS (クラリス) - irony (讽刺) - 259 - irony (反话)_qmRoma.qrc", SupportFileTypeEnum.QRC_ROMA);
+            put("D:\\workspace\\Java\\LyricTools\\resources\\lyric\\qrc\\ClariS (クラリス) - irony (讽刺) - 259 - irony (反话)_qmts.qrc", SupportFileTypeEnum.QRC_TS);
     }};
 
     //设置偏差值 由于存在字幕文件不同步的情况，所以设置一个偏差值，当时间轴相差在这个值内时，认为是同一句歌词
