@@ -8,13 +8,14 @@
 经测试发现，本地QRC文件无法直接通过其他开源项目的常规方法解密。本实现通过对文件字节流进行特定处理，成功实现了解密功能。
 
 **实现位置：**  
-解密逻辑详见 `utils.QrcLyricDecoder.decodeByQrcFile`
+解密逻辑详见 `utils.QrcLyricDecrypter.decryptByQrcFile`
 
 ## 2. 歌词文件合并
 **基于时间轴的歌词合并**  
 支持将多个歌词文件按照时间轴顺序合并，保留时间戳信息。当前支持格式：
 - LRC格式 (`.lrc`)
 - SRT格式 (`.srt`)
+- QRC格式 (`.qrc`)
 
 ## 运行环境
 - **需要JDK 21**  
@@ -32,13 +33,14 @@
 Local QRC files cannot be decrypted using standard methods from other open-source projects. This implementation processes the file byte stream with specific transformations to successfully decrypt the content.
 
 **Implementation:**  
-See `utils.QrcLyricDecoder.decodeByQrcFile` for the decryption logic.
+See `utils.QrcLyricDecrypter.decryptByQrcFile` for the decryption logic.
 
 ## 2. Lyric File Merger
 **Timeline-based lyric merging**  
 Merges content from multiple lyric files while preserving chronological order. Currently supports these formats:
 - LRC (`.lrc`)
 - SRT (`.srt`)
+- QRC (`.qrc`)
 
 ## Runtime Environment
 - **Requires JDK 21**  
