@@ -2,6 +2,10 @@ package utils;
 
 import entity.LyricEntity;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,11 +15,18 @@ public class LyricMerge {
 
     /**
      * 合并多个歌词列表
-     * @param lyrics 歌词列表
+     * @param fileList 文件列表
      * @param timeDifference 时间差范围（毫秒）
      * @return 合并后的歌词列表
      */
-    public static List<LyricEntity> mergeLyric(List<List<LyricEntity>> lyrics, long timeDifference) {
+    public static List<LyricEntity> mergeLyricByFileList(String[] fileList, long timeDifference) {
+
+        // 检查路径有效性并解析
+        List<List<LyricEntity>> lyrics = LyricMerge.parseLyricFileList(Arrays.asList(fileList));
+
+        // 排除非法路径
+        lyrics.removeIf(list -> list == null || list.isEmpty());
+
         List<LyricEntity> mergedLyric = new ArrayList<>();
         int[] pointers = new int[lyrics.size()];
         Arrays.fill(pointers, 0);
@@ -92,6 +103,54 @@ public class LyricMerge {
             this.sublistIndex = sublistIndex;
             this.entity = entity;
         }
+    }
+
+    /**
+     * 解析歌词文件
+     * @param filePath 文件路径
+     * @return 歌词列表
+     * @throws IOException 文件读取异常
+     */
+    private static List<LyricEntity> parseLyricFile(String filePath) throws IOException {
+        Path path;
+        path = Paths.get(filePath);
+        if (!Files.exists(path)) {
+            return null;
+        }
+
+        // 根据文件扩展名解析文件
+        return switch (getFileExtension(filePath)) {
+            case "srt" -> LyricParser.srtParseByFile(path);
+            case "lrc" -> LyricParser.lrcParseByFile(path);
+            default -> null;
+        };
+    }
+
+    /**
+     * 解析歌词文件列表
+     * @param filePaths 文件路径列表
+     * @return 歌词列表
+     */
+    private static List<List<LyricEntity>> parseLyricFileList(List<String> filePaths) {
+        List<List<LyricEntity>> lyrics = new ArrayList<>();
+        filePaths.forEach(path -> {
+            try {
+                lyrics.add(parseLyricFile(path));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return lyrics;
+    }
+
+    /**
+     * 获取文件扩展名
+     * @param filePath 文件路径
+     * @return 文件扩展名
+     */
+    private static String getFileExtension(String filePath) {
+        int dotIndex = filePath.lastIndexOf('.');
+        return (dotIndex == -1) ? "" : filePath.substring(dotIndex + 1).toLowerCase();
     }
 
     /**

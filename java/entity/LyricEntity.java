@@ -1,5 +1,7 @@
 package entity;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 
 // 通用字幕模型
@@ -25,7 +27,6 @@ public class LyricEntity implements Comparator<LyricEntity> {
      */
     private String text;
 
-    // 构造方法、Getter/Setter
     public LyricEntity(Integer number, Long startTimeMs, Long endTimeMs, String text) {
         this.number = number;
         this.startTimeMs = startTimeMs;
@@ -45,12 +46,20 @@ public class LyricEntity implements Comparator<LyricEntity> {
         return startTimeMs;
     }
 
+    public Double getStartTimeSeconds() {
+        return BigDecimal.valueOf(startTimeMs).divide(new BigDecimal(1000), 2, RoundingMode.HALF_UP).doubleValue();
+    }
+
     public void setStartTimeMs(Long startTimeMs) {
         this.startTimeMs = startTimeMs;
     }
 
     public Long getEndTimeMs() {
         return endTimeMs;
+    }
+
+    public Double getEndTimeSeconds() {
+        return BigDecimal.valueOf(endTimeMs).divide(new BigDecimal(1000), 2, RoundingMode.HALF_UP).doubleValue();
     }
 
     public void setEndTimeMs(Long endTimeMs) {
