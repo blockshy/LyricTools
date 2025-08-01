@@ -588,7 +588,8 @@ public class QrcLyricDecrypter {
         try {
             Inflater inflater = new Inflater();
             inflater.setInput(step3);
-            byte[] decompressed = new byte[step3.length * 2]; // 初始缓冲区
+            //当设置过小时可能导致最终解压出来的数据不完整，这里设置为4大一些
+            byte[] decompressed = new byte[step3.length * 4]; // 初始缓冲区
             int decompressedLength = inflater.inflate(decompressed);
             inflater.end();
             
@@ -651,7 +652,7 @@ public class QrcLyricDecrypter {
     public static String decryptByQrcHexContent(String hexContent){
 
         // 跳过前11字节(22个十六进制字符)
-        String processedHex = hexContent.substring(22);
+        String processedHex = hexContent.startsWith("9825B0ACE3028368E8FC6C") ? hexContent.substring(22) : hexContent;
 
         // 执行异或操作
         String xoredHex = CommonUtils.xorHexStrings(processedHex, XOR_KEY);

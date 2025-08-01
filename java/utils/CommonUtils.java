@@ -160,6 +160,11 @@ public class CommonUtils {
         }
     }
 
+    /**
+     * 读取文件为字节数组
+     * @param filePath 文件路径
+     * @return 文件内容的字节数组
+     */
     public static byte[] readFileToBytes(String filePath) {
         try {
             Path path = Paths.get(filePath);
@@ -169,6 +174,30 @@ public class CommonUtils {
         }
     }
 
+    /**
+     * 将内容写入指定目录下的歌词文件
+     * @param outputDir 输出目录路径
+     * @param filename 文件名
+     * @param content 要写入的内容
+     */
+    public static void writeFiles(String outputDir, String filename, String content) {
+        // 确保输出目录存在
+        Path outputPath = Paths.get(outputDir);
+        if (!Files.exists(outputPath)) {
+            try {
+                Files.createDirectories(outputPath);
+            } catch (IOException e) {
+                throw new RuntimeException("创建输出目录失败: " + outputDir, e);
+            }
+        }
+
+        // 构建完整文件路径并写入内容
+        try {
+            Files.write(outputPath.resolve(filename), content.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException("写入文件失败: " + outputDir + filename, e);
+        }
+    }
 
 
     /**
