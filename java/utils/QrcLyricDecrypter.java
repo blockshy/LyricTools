@@ -637,14 +637,8 @@ public class QrcLyricDecrypter {
      * @return 解密后的文本内容
      */
     public static String decryptByQrcFile(String filePath){
-        byte[] fileBytes;
-        try {
-            fileBytes = Files.readAllBytes(Paths.get(filePath));
-        } catch (IOException e) {
-            throw new RuntimeException("文件读取失败: " + e.getMessage());
-        }
 
-        String hexContent = CommonUtils.bytesToHex(fileBytes);
+        String hexContent = CommonUtils.bytesToHex(CommonUtils.readFileToBytes(filePath));
 
         return decryptByQrcHexContent(hexContent);
     }
@@ -674,16 +668,15 @@ public class QrcLyricDecrypter {
         return decryptQrc;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         // 示例用法
 
         // 实际使用中从文件读取
         // 示例文件内容（实际使用时替换为真实文件读取）
         // 从文件读取原始字节
         String filePath = "文件路径";
-        byte[] fileBytes = Files.readAllBytes(Paths.get(filePath));
 
-        String hexContent = CommonUtils.bytesToHex(fileBytes);
+        String hexContent = CommonUtils.bytesToHex(CommonUtils.readFileToBytes(filePath));
 
         // 跳过前11字节(22个十六进制字符)
         String processedHex = hexContent.substring(22);

@@ -1,13 +1,8 @@
 package utils;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -55,15 +50,12 @@ public class BakQrcLyricParser {
 
     // 解析XML文档
     public static QrcLyrics parseQrcLyrics(String xml) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
         
         Map<String, String> metadata = new HashMap<>();
         List<LyricLine> lines = new ArrayList<>();
 
         // 提取歌词内容
-        NodeList lyricNodes = doc.getElementsByTagName("Lyric_1");
+        NodeList lyricNodes = CommonUtils.parseXml(xml).getElementsByTagName("Lyric_1");
         if (lyricNodes.getLength() > 0) {
             Element lyric = (Element) lyricNodes.item(0);
             String content = lyric.getAttributeNode("LyricContent").getValue();

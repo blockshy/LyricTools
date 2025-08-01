@@ -2,15 +2,11 @@ package utils;
 
 import constant.SupportFileTypeEnum;
 import entity.LyricEntity;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -22,18 +18,16 @@ import java.util.regex.Pattern;
 
 public class LyricParser {
 
-    public static List<LyricEntity> srtParseByFile(Path filePath) throws IOException {
-        List<String> lines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
-        List<LyricEntity> subtitles = getLyricEntitiesSrt(lines);
+    public static List<LyricEntity> srtParseByFile(String filePath) {
 
-        return subtitles;
+        return getLyricEntitiesSrt(CommonUtils.readFileToList(filePath));
     }
 
-    public static List<LyricEntity> srtParseByContent(String content) throws IOException {
-        List<String> lines = Arrays.stream(content.split("\\n")).toList();
-        List<LyricEntity> subtitles = getLyricEntitiesSrt(lines);
+    public static List<LyricEntity> srtParseByContent(String content) {
 
-        return subtitles;
+        List<String> lines = Arrays.stream(content.split("\\n")).toList();
+
+        return getLyricEntitiesSrt(lines);
     }
 
     private static List<LyricEntity> getLyricEntitiesSrt(List<String> lines) {
@@ -69,9 +63,8 @@ public class LyricParser {
      * @param filePath 文件路径
      * @return 对象集合
      */
-    public static List<LyricEntity> lrcParseByFile(Path filePath) throws IOException {
-        List<String> lines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
-        List<LyricEntity> lyrics = getLyricEntitiesLrc(lines);
+    public static List<LyricEntity> lrcParseByFile(String filePath) {
+        List<LyricEntity> lyrics = getLyricEntitiesLrc(CommonUtils.readFileToList(filePath));
         return lyrics;
     }
 
@@ -79,7 +72,7 @@ public class LyricParser {
      * @param content lrc内容
      * @return 对象集合
      */
-    public static List<LyricEntity> lrcParseByContent(String content) throws IOException {
+    public static List<LyricEntity> lrcParseByContent(String content) {
         List<String> lines = Arrays.stream(content.split("\\n")).toList();
         List<LyricEntity> lyrics = getLyricEntitiesLrc(lines);
         return lyrics;
@@ -113,11 +106,10 @@ public class LyricParser {
      * @param filePath 文件路径
      * @return 对象集合
      */
-    public static List<LyricEntity> qrcXmlParseByFile(Path filePath) throws IOException, SAXException, ParserConfigurationException {
+    public static List<LyricEntity> qrcXmlParseByFile(Path filePath) throws IOException {
 
         String xml = Files.readString(filePath, StandardCharsets.UTF_8);
-        List<LyricEntity> lyrics = getLyricEntitiesQrcXml(xml);
-        return lyrics;
+        return qrcXmlParseByContent(xml);
     }
 
     /**
@@ -125,31 +117,37 @@ public class LyricParser {
      * @param xml xml内容
      * @return 对象集合
      */
-    public static List<LyricEntity> qrcXmlParseByContent(String xml) throws IOException, SAXException, ParserConfigurationException {
+    public static List<LyricEntity> qrcXmlParseByContent(String xml) {
 
-        List<LyricEntity> lyrics = getLyricEntitiesQrcXml(xml);
-        return lyrics;
+        return getLyricEntitiesQrcXml(xml);
     }
 
-    private static List<LyricEntity> getLyricEntitiesQrcXml(String xml) throws ParserConfigurationException, SAXException, IOException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+    /**
+     * 解析QRC XML歌词内容
+     * @param xml XML内容
+     * @return 对象集合
+     */
+    private static List<LyricEntity> getLyricEntitiesQrcXml(String xml) {
 
         List<LyricEntity> lyrics = new ArrayList<>();
 
         // 提取歌词内容
-        NodeList lyricNodes = doc.getElementsByTagName("Lyric_1");
+        NodeList lyricNodes = CommonUtils.parseXml(xml).getElementsByTagName("Lyric_1");
         if (lyricNodes.getLength() > 0) {
             Element lyric = (Element) lyricNodes.item(0);
             String content = lyric.getAttributeNode("LyricContent").getValue();
             parseQrcLyricContent(content, lyrics);
         }
+
         lyrics.sort(Comparator.comparingLong(LyricEntity::getStartTimeMs));
         return lyrics;
     }
 
-    // 解析歌词内容
+    /**
+     * 解析QRC歌词内容
+     * @param content QRC歌词内容
+     * @param lyrics 歌词列表
+     */
     private static void parseQrcLyricContent(String content,
                                              List<LyricEntity> lyrics) {
         String[] parts = content.replaceAll("\\[", "\n[").split("\\n");
@@ -181,12 +179,17 @@ public class LyricParser {
      * @param xml xml内容
      * @return 对象集合
      */
-    public static List<LyricEntity> qrcTsXmlParseByContent(String xml) throws IOException, SAXException, ParserConfigurationException {
+    public static List<LyricEntity> qrcTsXmlParseByContent(String xml) {
 
         List<LyricEntity> lyrics = getLyricEntitiesQrcTsXml(xml);
         return lyrics;
     }
 
+    /**
+     * 解析QRC TS歌词内容
+     * @param xml XML内容
+     * @return 对象集合
+     */
     private static List<LyricEntity> getLyricEntitiesQrcTsXml(String xml) {
         List<String> lines = Arrays.stream(xml.split("\\n")).toList();
         List<LyricEntity> lyrics = new ArrayList<>();
@@ -218,18 +221,12 @@ public class LyricParser {
      * 解析歌词文件
      * @param filePath 文件路径
      * @return 歌词列表
-     * @throws IOException 文件读取异常
      */
-    private static List<LyricEntity> parseLyricFile(String filePath, SupportFileTypeEnum type) throws IOException, ParserConfigurationException, SAXException {
-        Path path;
-        path = Paths.get(filePath);
-        if (!Files.exists(path)) {
-            return null;
-        }
+    private static List<LyricEntity> parseLyricFile(String filePath, SupportFileTypeEnum type) {
 
         return switch (type) {
-            case SupportFileTypeEnum.SRT -> lrcParseByFile(path);
-            case SupportFileTypeEnum.LRC -> srtParseByFile(path);
+            case SupportFileTypeEnum.SRT -> lrcParseByFile(filePath);
+            case SupportFileTypeEnum.LRC -> srtParseByFile(filePath);
             case SupportFileTypeEnum.QRC -> qrcXmlParseByContent(QrcLyricDecrypter.decryptByQrcFile(filePath));
             case SupportFileTypeEnum.QRC_ROMA -> qrcXmlParseByContent(QrcLyricDecrypter.decryptByQrcFile(filePath));
             case SupportFileTypeEnum.QRC_TS -> qrcTsXmlParseByContent(QrcLyricDecrypter.decryptByQrcFile(filePath));
@@ -242,9 +239,8 @@ public class LyricParser {
      * @param content 歌词内容
      * @param type 歌词类型（SupportFileTypeEnum）
      * @return 歌词列表
-     * @throws IOException 文件读取异常
      */
-    public static List<LyricEntity> parseLyricContent(String content, SupportFileTypeEnum type) throws IOException, ParserConfigurationException, SAXException {
+    public static List<LyricEntity> parseLyricContent(String content, SupportFileTypeEnum type) {
 
         return switch (type) {
             case SupportFileTypeEnum.SRT -> lrcParseByContent(content);
@@ -269,13 +265,9 @@ public class LyricParser {
             if (filePath == null || filePath.isEmpty()) {
                 continue; // 跳过空路径
             }
-            try {
-                List<LyricEntity> lyricEntities = parseLyricFile(filePath, type);
-                if (lyricEntities != null && !lyricEntities.isEmpty()) {
-                    lyrics.add(lyricEntities);
-                }
-            } catch (IOException | ParserConfigurationException | SAXException e) {
-                System.err.println("Error parsing file: " + filePath + " - " + e.getMessage());
+            List<LyricEntity> lyricEntities = parseLyricFile(filePath, type);
+            if (lyricEntities != null && !lyricEntities.isEmpty()) {
+                lyrics.add(lyricEntities);
             }
         }
         return lyrics;

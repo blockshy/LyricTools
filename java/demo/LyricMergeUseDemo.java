@@ -8,6 +8,9 @@ import utils.OpenLyricUtils;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,14 +46,14 @@ public class LyricMergeUseDemo {
         System.out.println("--- SRT Format ---");
         System.out.println(srtContent);
 
-        /*//输出路径不存在则先创建
+        //输出路径不存在则先创建
         Path outputPath = Paths.get(OUTPUT_PATH);
         if (!Files.exists(outputPath)) {
             Files.createDirectories(outputPath);
         }
         // 写入文件
-        Files.write(Paths.get(OUTPUT_PATH + "subtitles.srt"), srtContent.getBytes());
-        Files.write(Paths.get(OUTPUT_PATH + "lyrics.lrc"), lrcContent.getBytes());*/
+        Files.write(Paths.get(OUTPUT_PATH + "lyrics.srt"), srtContent.getBytes());
+        Files.write(Paths.get(OUTPUT_PATH + "lyrics.lrc"), lrcContent.getBytes());
     }
 
 

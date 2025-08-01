@@ -1,6 +1,19 @@
 package utils;
 
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class CommonUtils {
@@ -131,5 +144,49 @@ public class CommonUtils {
         }
 
         return bytesToHex(result);
+    }
+
+    /**
+     * 读取文件为List<String>
+     * @param filePath 文件路径
+     * @return 文件内容的List<String>
+     */
+    public static List<String> readFileToList(String filePath) {
+        try {
+            Path path = Paths.get(filePath);
+            return Files.readAllLines(path);
+        } catch (IOException e) {
+            throw new RuntimeException("读取文件失败: " + filePath, e);
+        }
+    }
+
+    public static byte[] readFileToBytes(String filePath) {
+        try {
+            Path path = Paths.get(filePath);
+            return Files.readAllBytes(path);
+        } catch (IOException e) {
+            throw new RuntimeException("读取文件失败: " + filePath, e);
+        }
+    }
+
+
+
+    /**
+     * 解析XML字符串为Document对象
+     * @param xml XML字符串
+     * @return 解析后的Document对象
+     */
+    public static Document parseXml(String xml) {
+        Document document = null;
+        try {
+            // 此处可添加安全配置（防XXE攻击）
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            document = builder.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+        }catch (ParserConfigurationException | IOException | SAXException e) {
+            throw new RuntimeException("解析XML失败: " + xml, e);
+        }
+        return document;
     }
 }
