@@ -52,14 +52,14 @@ Merges content from multiple lyric files while preserving chronological order. C
 - SRT (`.srt`)
 - QRC (`.qrc`)
 
-## 3. 使用示例
+## 3. Usage Examples
 - **Lyric Merge Example** (`demo.LyricMergeUseDemo#main`)  
   Configure: `OUTPUT_PATH` `LYRIC_QRC_ORDER_LIST` `TIME_DIFFERENCE`
 
-- **本地QRC解密示例** (`demo.QrcDecryptUseDemo#main`)  
+- **Local QRC Decryption Example** (`demo.QrcDecryptUseDemo#main`)  
   Configure: `FILE_PATH`
 
-- **QRC解密内容解析示例** (`demo.QrcXmlPaserDemo.main`)  
+- **QRC Decryption Content Parsing Example** (`demo.QrcXmlPaserDemo.main`)  
   Configure: `FILE_TYPE` `XML`
 
 ## Runtime Environment
