@@ -17,6 +17,16 @@
 - SRT格式 (`.srt`)
 - QRC格式 (`.qrc`)
 
+## 3. 使用示例
+- **歌词合并示例** (`demo.LyricMergeUseDemo#main`)  
+  配置：`OUTPUT_PATH` `LYRIC_QRC_ORDER_LIST` `TIME_DIFFERENCE`
+
+- **本地QRC解密示例** (`demo.QrcDecryptUseDemo#main`)  
+  配置：`FILE_PATH`
+
+- **QRC解密内容解析示例** (`demo.QrcXmlPaserDemo.main`)  
+  配置：`FILE_TYPE` `XML`
+
 ## 运行环境
 - **需要JDK 21**  
   运行前请确保已安装Java开发工具包版本21
@@ -41,6 +51,16 @@ Merges content from multiple lyric files while preserving chronological order. C
 - LRC (`.lrc`)
 - SRT (`.srt`)
 - QRC (`.qrc`)
+
+## 3. 使用示例
+- **Lyric Merge Example** (`demo.LyricMergeUseDemo#main`)  
+  Configure: `OUTPUT_PATH` `LYRIC_QRC_ORDER_LIST` `TIME_DIFFERENCE`
+
+- **本地QRC解密示例** (`demo.QrcDecryptUseDemo#main`)  
+  Configure: `FILE_PATH`
+
+- **QRC解密内容解析示例** (`demo.QrcXmlPaserDemo.main`)  
+  Configure: `FILE_TYPE` `XML`
 
 ## Runtime Environment
 - **Requires JDK 21**  

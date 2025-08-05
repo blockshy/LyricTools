@@ -45,7 +45,7 @@ public class LyricConverter {
         StringBuilder lrc = new StringBuilder();
 
         for (LyricEntity lyric : sortedLyrics) {
-            //对于单个时间段的多行字幕使用相同的时间轴+文本行
+            // 对于单个时间段的多行字幕使用相同的时间轴+文本行
             for (String lyricLine : lyric.getText().split("\n")) {
                 lrc.append("[")
                     .append(CommonUtils.formatLrcTime(lyric.getStartTimeMs()))

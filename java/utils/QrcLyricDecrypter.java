@@ -1,9 +1,6 @@
 package utils;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -14,7 +11,7 @@ import java.util.zip.Inflater;
  */
 public class QrcLyricDecrypter {
 
-    //读取本地QRC转换为可以decrypt的字节流所需异或数据
+    // 读取本地QRC转换为可以decrypt的字节流所需异或数据
     private static final String XOR_KEY = "629F5B0900C35E95239F13117ED8923FBC90BB740EC347743D90AA3F51D8F411849FDE951DC3C609D59FFA66F9D8F0F7A090A1D6F3C3F3D6A190A0F7F0D8F966FA9FD509C6C31D95DE9F8411F4D8513FAA903D7447C30E74BB90BC3F92D87E11139F23955EC300095B9F6266A1D852F76790CAD64AC34AD6CA9067F752D8A166";
 
     // 三重DES算法使用的三个密钥
@@ -588,7 +585,7 @@ public class QrcLyricDecrypter {
         try {
             Inflater inflater = new Inflater();
             inflater.setInput(step3);
-            //当设置过小时可能导致最终解压出来的数据不完整，这里设置为4大一些
+            // 当设置过小时可能导致最终解压出来的数据不完整，这里设置为4大一些
             byte[] decompressed = new byte[step3.length * 4]; // 初始缓冲区
             int decompressedLength = inflater.inflate(decompressed);
             inflater.end();
