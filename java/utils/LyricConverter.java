@@ -3,7 +3,9 @@ package utils;
 import entity.LyricEntity;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class LyricConverter {
 
@@ -15,19 +17,30 @@ public class LyricConverter {
     public static String convertToSrt(List<LyricEntity> lyrics) {
         // 按开始时间排序
         List<LyricEntity> sortedLyrics = new ArrayList<>(lyrics);
-
+        sortedLyrics.sort(Comparator.comparingLong(LyricEntity::getStartTimeMs));
         StringBuilder srt = new StringBuilder();
         int index = 1;
+        for (int i = 0; i < sortedLyrics.size(); i++) {
+            LyricEntity current = sortedLyrics.get(i);
+            Long endTimeMs = current.getEndTimeMs();
 
-        for (LyricEntity lyric : sortedLyrics) {
+            // 如果结束时间为空，则使用下一行的开始时间减去100ms（若非最后一行）
+            if (endTimeMs == null) {
+                if (i < sortedLyrics.size() - 1) {
+                    endTimeMs = sortedLyrics.get(i + 1).getStartTimeMs() - 100;
+                } else {
+                    // 最后一行处理：若无结束时间，则设置为开始时间 + 默认持续时间（例如5秒）
+                    endTimeMs = current.getStartTimeMs() + 5000; // 默认5秒
+                }
+            }
             srt.append(index++)
-               .append("\n")
-               .append(CommonUtils.formatSrtTime(lyric.getStartTimeMs()))
-               .append(" --> ")
-               .append(CommonUtils.formatSrtTime(lyric.getEndTimeMs()))
-               .append("\n")
-               .append(lyric.getText())
-               .append("\n\n");
+                    .append("\n")
+                    .append(CommonUtils.formatSrtTime(current.getStartTimeMs()))
+                    .append(" --> ")
+                    .append(CommonUtils.formatSrtTime(endTimeMs))
+                    .append("\n")
+                    .append(current.getText())
+                    .append("\n\n");
         }
 
         return srt.toString().trim();
