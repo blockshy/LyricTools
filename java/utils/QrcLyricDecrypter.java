@@ -657,6 +657,7 @@ public class QrcLyricDecrypter {
         // 解密内容
         String decryptQrc = decryptQrc(xoredHex);
 
+        // 实际上可忽略该逻辑，后续已验证是由于缓冲区设置过小导致的解压数据不完整
         if(decryptQrc.contains("<QrcInfos>") && !decryptQrc.contains("</QrcInfos>")){
             // 某些qrc文件解密之后缺少后缀
             decryptQrc += "\n\"/>\n</LyricInfo>\n</QrcInfos>";
