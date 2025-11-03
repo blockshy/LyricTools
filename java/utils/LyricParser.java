@@ -129,7 +129,7 @@ public class LyricParser {
         List<LyricEntity> lyrics = new ArrayList<>();
 
         // 提取歌词内容
-        NodeList lyricNodes = CommonUtils.parseXml(xml).getElementsByTagName("Lyric_1");
+        NodeList lyricNodes = CommonUtils.parseXml(CommonUtils.fixInvalidQuotes(xml)).getElementsByTagName("Lyric_1");
         if (lyricNodes.getLength() > 0) {
             Element lyric = (Element) lyricNodes.item(0);
             String content = lyric.getAttributeNode("LyricContent").getValue();

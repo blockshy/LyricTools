@@ -1,6 +1,6 @@
 package utils;
 
-import org.w3c.dom.Document;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -15,6 +15,8 @@ import java.nio.file.Paths;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommonUtils {
 
@@ -217,5 +219,34 @@ public class CommonUtils {
             throw new RuntimeException("解析XML失败: " + xml, e);
         }
         return document;
+    }
+
+    /**
+     * 修复 LyricContent 属性值中的非法双引号 "，其余内容不变
+     */
+    public static String fixInvalidQuotes(String inputXml) {
+        if (inputXml == null || inputXml.isEmpty()) return inputXml;
+
+        // 正则匹配：LyricContent="任意字符(不包含外层引号)"，但允许内部有 "
+        // 使用 (?=...) 预查确保匹配到完整的属性值
+        String regex = "LyricContent=\"(.*?)\"\\s*/>";
+        StringBuilder result = new StringBuilder();
+        Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);  // 关键：DOTALL
+        Matcher matcher = pattern.matcher(inputXml);
+
+        while (matcher.find()) {
+            String fullMatch = matcher.group(0);
+            String content = matcher.group(1);
+
+            // 关键：移除内容中的所有 "
+            String cleanedContent = content.replace("\"", "");
+            System.out.println(cleanedContent);
+
+            String replacement = "LyricContent=\"" + cleanedContent + "\"/>";
+            matcher.appendReplacement(result, replacement);
+        }
+        matcher.appendTail(result);
+
+        return result.toString();
     }
 }
