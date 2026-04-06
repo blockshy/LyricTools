@@ -3,6 +3,10 @@
 1. 解密QQ音乐本地QRC歌词文件
 2. 基于时间轴合并多个歌词文件
 
+## 项目链接
+- **在线使用网站：** https://rsec.top/lyric-tools
+- **Web 项目仓库：** https://github.com/blockshy/LyricToolsWeb
+
 ## 1. QRC文件解密
 **针对QQ音乐QRC格式的已验证解决方案**  
 经测试发现，本地QRC文件无法直接通过其他开源项目的常规方法解密。本实现通过对文件字节流进行特定处理，成功实现了解密功能。
@@ -37,6 +41,10 @@
 
 1. Decrypt QQ Music's local QRC lyric files
 2. Merge multiple lyric files based on their timelines
+
+## Project Links
+- **Online site:** https://rsec.top/lyric-tools
+- **Web project repository:** https://github.com/blockshy/LyricToolsWeb
 
 ## 1. QRC File Decryption
 **Verified solution for QQ Music's QRC format**  
